@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+
+<header class="top-bar">
+    <div class="logo">CMS</div>
+    <div class="user-profile">
+        <i class="fa-regular fa-bell notification-icon"></i>
+        <div class="user-info">
+            <i class="fa-regular fa-circle-user avatar-icon"></i>
+            <span class="user-name">James Bond</span>
+        </div>
+    </div>
+</header>
+
+<div class="main-wrapper">
+    
+    <nav> 
+        <ul>
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="students.html">Students</a></li>
+            <li><a href="courses.html">Tasks</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>
+            Students
+            <button class="add-btn">+</button>
+        </h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Group</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Birthday</th>
+                    <th>Status</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>KN-21</td>
+                    <td>John Smith</td>
+                    <td>M</td>
+                    <td>11.05.2004</td>
+                    <td><span class="dot green"></span></td>
+                    <td>
+                        <button class="icon-btn"><i class="fa-solid fa-pen"></i></button> 
+                        <button class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <button class="arrow">&lt;</button>
+            <button class="page active">1</button>
+            <button class="page">2</button>
+            <button class="page">3</button>
+            <button class="page">4</button>
+            <button class="arrow">&gt;</button>
+        </div>
+    </main>
+</div>
+</body>
+</html>
