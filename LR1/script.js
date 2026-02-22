@@ -25,20 +25,20 @@ document.querySelectorAll('.close-modal').forEach(btn => {
 saveBtn.onclick = () => {
     const group = document.getElementById('st-group').value;
     const name = `${document.getElementById('st-fname').value} ${document.getElementById('st-lname').value}`;
-    
+    const status = document.getElementById('st-status').value;
     if (currentRow) {
         currentRow.cells[1].innerText = group;
         currentRow.cells[2].innerText = name;
     } else {
         const row = tableBody.insertRow();
         row.innerHTML = `
-            <td><input type="checkbox"></td>
-            <td>${group}</td>
-            <td>${name}</td>
-            <td>M</td>
-            <td>${document.getElementById('st-birth').value}</td>
-            <td><span class="dot green"></span></td>
-            <td>
+            <td data-label="Select"><input type="checkbox"></td>
+            <td data-label="Group">${group}</td>
+            <td data-label="Name">${name}</td>
+            <td data-label="Gender">M</td>
+            <td data-label="Birthday">${document.getElementById('st-birth').value}</td>
+            <td data-label="Status"><span class="dot ${status}"></span></td>
+            <td data-label="Options">
                 <button class="icon-btn edit-row"><i class="fa-solid fa-pen"></i></button> 
                 <button class="icon-btn delete-row"><i class="fa-solid fa-xmark"></i></button>
             </td>

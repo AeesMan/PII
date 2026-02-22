@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS - Dashboard</title> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo">CMS</div>
+        <div class="header-right">
+            
+            <div class="dropdown" id="notif-dropdown">
+                <div class="notification-container">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="pulse-dot"></span>
+                </div>
+                <div class="dropdown-content notif-box">
+                    <div class="dropdown-content-inner">
+                        <div class="notif-item">
+                            <i class="fa-solid fa-circle-user"></i> 
+                            <div><strong>Admin</strong><p>Waiting to approve...</p></div>
+                        </div>
+                        <div class="notif-item">
+                            <i class="fa-solid fa-circle-user"></i> 
+                            <div><strong>John K.</strong><p>New comment added</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown" id="profile-dropdown">
+                <div class="user-info">
+                    <img src="avatar.jpg" class="avatar-icon" alt="avatar">
+                    <span class="user-name">Han Solo</span>
+                </div>
+                <div class="dropdown-content profile-box">
+                    <div class="dropdown-content-inner">
+                        <a href="#">Profile</a>
+                        <a href="#">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#" class="active">Dashboard</a></li>
+                <li><a href="students.html">Students</a></li>
+                <li><a href="tasks.html">Tasks</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <div class="content-header">
+                <h1>Dashboard</h1> </div>
+            
+            <div class="placeholder-text">
+                <p>Тут буде контент для цієї сторінки пізніше.</p>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Students</title>
+    <title>CMS - Students</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -12,25 +12,36 @@
     <header class="top-bar">
         <div class="logo">CMS</div>
         <div class="header-right">
+            
             <div class="dropdown" id="notif-dropdown">
                 <div class="notification-container">
                     <i class="fa-regular fa-bell"></i>
                     <span class="pulse-dot"></span>
                 </div>
                 <div class="dropdown-content notif-box">
-                    <div class="notif-item"><i class="fa-solid fa-circle-user"></i> <div><strong>Admin</strong><p>Waiting to approve...</p></div></div>
-                    <div class="notif-item"><i class="fa-solid fa-circle-user"></i> <div><strong>John K.</strong><p>New comment added</p></div></div>
+                    <div class="dropdown-content-inner">
+                        <div class="notif-item">
+                            <i class="fa-solid fa-circle-user"></i> 
+                            <div><strong>Admin</strong><p>Waiting to approve...</p></div>
+                        </div>
+                        <div class="notif-item">
+                            <i class="fa-solid fa-circle-user"></i> 
+                            <div><strong>John K.</strong><p>New comment added</p></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="dropdown" id="profile-dropdown">
                 <div class="user-info">
-                    <i class="fa-regular fa-circle-user avatar-icon"></i>
+                    <img src="avatar.jpg" class="avatar-icon" alt="avatar">
                     <span class="user-name">Han Solo</span>
                 </div>
                 <div class="dropdown-content profile-box">
-                    <a href="#">Profile</a>
-                    <a href="#">Log Out</a>
+                    <div class="dropdown-content-inner">
+                        <a href="#">Profile</a>
+                        <a href="#">Log Out</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -39,9 +50,9 @@
     <div class="main-wrapper">
         <nav class="sidebar">
             <ul>
-                <li><a href="#">Dashboard</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
                 <li><a href="#" class="active">Students</a></li>
-                <li><a href="#">Tasks</a></li>
+                <li><a href="tasks.html">Tasks</a></li>
             </ul>
         </nav>
 
@@ -65,13 +76,13 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="checkbox"></td>
-                        <td>KN-21</td>
-                        <td>John Smith</td>
-                        <td>M</td>
-                        <td>11.05.2004</td>
-                        <td><span class="dot green"></span></td>
-                        <td>
+                        <td data-label="Select"><input type="checkbox"></td>
+                        <td data-label="Group">KN-21</td>
+                        <td data-label="Name">John Smith</td>
+                        <td data-label="Gender">M</td>
+                        <td data-label="Birthday">2004-05-11</td>
+                        <td data-label="Status"><span class="dot online"></span></td>
+                        <td data-label="Options">
                             <button class="icon-btn edit-row"><i class="fa-solid fa-pen"></i></button> 
                             <button class="icon-btn delete-row"><i class="fa-solid fa-xmark"></i></button>
                         </td>
@@ -108,6 +119,14 @@
                     <select id="st-gender"><option>Male</option><option>Female</option></select>
                 </div>
                 <div class="form-row"><label>Birthday</label><input type="date" id="st-birth"></div>
+                <div class="form-row">
+                    <label>Status</label>
+                    <select id="st-status">
+                        <option value="online">Online</option>
+                        <option value="offline">Offline</option>
+                        <option value="away">Away</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn-cancel close-modal">Cancel</button>
