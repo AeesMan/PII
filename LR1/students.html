@@ -10,9 +10,11 @@
 <body>
 
     <header class="top-bar">
+    <div class="header-left">
+        <i class="fa-solid fa-bars burger-btn" id="mobile-menu-toggle"></i>
         <div class="logo">CMS</div>
+    </div>
         <div class="header-right">
-            
             <div class="dropdown" id="notif-dropdown">
                 <div class="notification-container">
                     <i class="fa-regular fa-bell"></i>
@@ -61,35 +63,35 @@
                 <h1>Students</h1>
                 <button class="add-btn" id="open-add-modal">+</button>
             </div>
-
-            <table id="students-table">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox"></th>
-                        <th>Group</th>
-                        <th>Name</th>
-                        <th>Gender</th>
-                        <th>Birthday</th>
-                        <th>Status</th>
-                        <th>Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td data-label="Select"><input type="checkbox"></td>
-                        <td data-label="Group">KN-21</td>
-                        <td data-label="Name">John Smith</td>
-                        <td data-label="Gender">M</td>
-                        <td data-label="Birthday">2004-05-11</td>
-                        <td data-label="Status"><span class="dot online"></span></td>
-                        <td data-label="Options">
-                            <button class="icon-btn edit-row"><i class="fa-solid fa-pen"></i></button> 
-                            <button class="icon-btn delete-row"><i class="fa-solid fa-xmark"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
+            <div class="table-container">
+                <table id="students-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox"></th>
+                            <th>Group</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Birthday</th>
+                            <th>Status</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Select"><input type="checkbox"></td>
+                            <td data-label="Group">KN-21</td>
+                            <td data-label="Name">John Smith</td>
+                            <td data-label="Gender">M</td>
+                            <td data-label="Birthday">20-05-2005</td>
+                            <td data-label="Status"><span class="dot online"></span></td>
+                            <td data-label="Options">
+                                <button class="icon-btn edit-row"><i class="fa-solid fa-pen"></i></button> 
+                                <button class="icon-btn delete-row"><i class="fa-solid fa-xmark"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
             <div class="pagination">
                 <button>&lt;</button>
                 <button class="active">1</button>

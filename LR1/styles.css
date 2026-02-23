@@ -6,9 +6,21 @@
 body { font-family: Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
 
 /* HEADER */
-.top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--gray-bg); color: white; padding: 0 20px; height: 50px; }
+.top-bar {
+    display: flex;
+    justify-content: space-between; /* Тепер розштовхує header-left та header-right */
+    align-items: center;
+    background: var(--gray-bg);
+    color: white;
+    padding: 0 20px;
+    height: 50px;
+}
 .header-right { display: flex; align-items: center; gap: 25px; height: 100%; }
-
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Відступ між бургером і написом CMS */
+}
 /* DROPDOWNS */
 .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
 .dropdown-content { display: none; position: absolute; top: 100%; right: 0; padding-top: 10px; z-index: 100;}
@@ -86,68 +98,108 @@ th { color: #666; font-weight: normal; }
 
 
 @media (max-width: 768px) {
-    /* 1. LAYOUT: Перетворюємо Sidebar на верхнє меню або ховаємо його */
-    .main-wrapper {
-        flex-direction: column; /* Сайдбар тепер зверху, а не збоку */
+    /* 1. SIDEBAR: Висувне меню */
+    .sidebar {
+        position: fixed;
+        top: 50px;
+        left: 0;
+        width: 250px;
+        height: calc(100vh - 50px);
+        background: white;
+        z-index: 150;
+        transition: transform 0.3s ease;
+        transform: translateX(-100%);
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        display: block !important; /* Повертаємо видимість */
+        padding: 20px;
     }
 
-    .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        padding: 10px 20px;
+    .sidebar.open {
+        transform: translateX(0);
     }
 
     .sidebar ul {
-        display: flex;
-        justify-content: space-around; /* Пункти меню в один ряд на мобілці */
+        display: block;
+        flex-direction: column;
     }
 
-    .sidebar a {
-        margin-bottom: 0;
+    .burger-btn {
+        display: block;
+        cursor: pointer;
+        font-size: 20px;
+        color: white;
     }
 
-    /* 2. ТАБЛИЦЯ: Найскладніша частина */
-    /* На маленьких екранах таблиці не вміщуються, тому ми перетворимо їх на "картки" */
-    table, thead, tbody, th, td, tr {
-        display: block; 
+    /* 2. LAYOUT: Контент на весь екран */
+    .main-wrapper {
+        flex-direction: column;
     }
 
-    thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px; /* Ховаємо заголовки таблиці */
+    .content {
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* 3. ТАБЛИЦЯ: Чистий табличний вигляд зі скролом */
+    .table-container {
+        width: 100%;
+        overflow-x: auto; /* Вмикаємо горизонтальну прокрутку */
+        -webkit-overflow-scrolling: touch;
+        margin-top: 15px;
+        border: 1px solid #ddd;
+    }
+
+    table {
+        display: table !important; /* Тільки табличний вигляд */
+        width: 100%;
+        min-width: 650px; /* Гарантуємо, що колонки не злипнуться */
+        border-collapse: collapse;
+        table-layout: auto;
+    }
+
+    thead {
+        display: table-header-group !important;
+    }
+
+    tbody {
+        display: table-row-group !important;
     }
 
     tr {
-        border: 1px solid #ccc;
-        margin-bottom: 10px;
-        border-radius: 8px;
+        display: table-row !important;
+    }
+
+    th, td {
+        display: table-cell !important; /* Кожна клітинка — це стовпець */
+        padding: 12px 8px !important;
+        text-align: center !important;
+        border: 1px solid #eee !important;
+        white-space: nowrap; /* Текст в один рядок */
+        font-size: 13px;
+        width: auto !important;
+        position: static !important; /* Прибираємо відносне позиціонування */
+    }
+
+    /* ПОВНІСТЮ ПРИБИРАЄМО ЗАЛИШКИ КАРТОК */
+    td::before {
+        display: none !important;
     }
 
     td {
-        border: none;
-        border-bottom: 1px solid #eee;
-        position: relative;
-        padding-left: 50%; /* Звільняємо місце для назви колонки */
-        text-align: right;
+        padding-left: 8px !important; /* Прибираємо величезний відступ 50% */
     }
 
-    /* Додаємо назви колонок через псевдоелемент */
-    td::before {
-        content: attr(data-label); /* Беремо назву з HTML атрибута */
-        position: absolute;
-        left: 10px;
-        font-weight: bold;
-        text-align: left;
-    }
-
-    /* 3. ШАПКА ТА МОДАЛКИ */
+    /* 4. ІНШЕ */
     .user-name {
-        display: none; /* Ховаємо ім'я, залишаємо тільки аватар для економії місця */
+        display: none;
     }
 
     .modal-content {
-        width: 90%; /* Модалка на весь екран з невеликими відступами */
+        width: 95%;
     }
+}
+
+@media (min-width: 769px) {
+    .burger-btn { display: none; }
 }
