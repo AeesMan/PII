@@ -6,6 +6,7 @@
     <title>CMS - Students</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
@@ -92,6 +93,7 @@
                     </tbody>
                 </table>
             </div> 
+
             <div class="pagination">
                 <button>&lt;</button>
                 <button class="active">1</button>
@@ -107,10 +109,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modal-title">Add student</h2>
-                <span class="close-modal">&times;</span>
+                <button class="btn-close close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-row">
+                    <input type="hidden" id="st-id">
                     <label>Group</label>
                     <select id="st-group"><option>KN-21</option><option>KN-22</option></select>
                 </div>
@@ -141,7 +144,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Warning</h2>
-                <span class="close-modal">&times;</span>
+                <button class="btn-close close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p id="delete-text">Are you sure you want to delete user?</p>
