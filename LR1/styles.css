@@ -8,7 +8,7 @@ body { font-family: Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden
 /* HEADER */
 .top-bar {
     display: flex;
-    justify-content: space-between; /* Тепер розштовхує header-left та header-right */
+    justify-content: space-between;
     align-items: center;
     background: var(--gray-bg);
     color: white;
@@ -19,7 +19,7 @@ body { font-family: Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden
 .header-left {
     display: flex;
     align-items: center;
-    gap: 15px; /* Відступ між бургером і написом CMS */
+    gap: 15px;
 }
 /* DROPDOWNS */
 .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
@@ -96,10 +96,33 @@ th { color: #666; font-weight: normal; }
 .pagination button.active { background: #eee; font-weight: bold; }
 .pagination button:hover { background: #eee; }
 
+/* Обгортка для інпуту та повідомлення про помилку */
+.input-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
 
+/* Текст помилки (за замовчуванням прихований) */
+.error-msg {
+    color: #ff4d4d;
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
+}
+
+/* Клас, який ми будемо додавати, якщо поле невалідне */
+.invalid input {
+    border: 2px solid #ff4d4d;
+    background-color: #fff0f0;
+}
+
+.invalid .error-msg {
+    display: block;
+}
 
 @media (max-width: 768px) {
-    /* 1. SIDEBAR: Висувне меню */
+    /* SIDEBAR */
     .sidebar {
         position: fixed;
         top: 50px;
@@ -111,7 +134,7 @@ th { color: #666; font-weight: normal; }
         transition: transform 0.3s ease;
         transform: translateX(-100%);
         box-shadow: 5px 0 15px rgba(0,0,0,0.1);
-        display: block !important; /* Повертаємо видимість */
+        display: block !important;
         padding: 20px;
     }
 
@@ -131,7 +154,7 @@ th { color: #666; font-weight: normal; }
         color: white;
     }
 
-    /* 2. LAYOUT: Контент на весь екран */
+    /* LAYOUT*/
     .main-wrapper {
         flex-direction: column;
     }
@@ -142,19 +165,19 @@ th { color: #666; font-weight: normal; }
         box-sizing: border-box;
     }
 
-    /* 3. ТАБЛИЦЯ: Чистий табличний вигляд зі скролом */
+    /* TABLE */
     .table-container {
         width: 100%;
-        overflow-x: auto; /* Вмикаємо горизонтальну прокрутку */
+        overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         margin-top: 15px;
         border: 1px solid #ddd;
     }
 
     table {
-        display: table !important; /* Тільки табличний вигляд */
+        display: table !important;
         width: 100%;
-        min-width: 650px; /* Гарантуємо, що колонки не злипнуться */
+        min-width: 650px;
         border-collapse: collapse;
         table-layout: auto;
     }
@@ -172,26 +195,24 @@ th { color: #666; font-weight: normal; }
     }
 
     th, td {
-        display: table-cell !important; /* Кожна клітинка — це стовпець */
+        display: table-cell !important;
         padding: 12px 8px !important;
         text-align: center !important;
         border: 1px solid #eee !important;
-        white-space: nowrap; /* Текст в один рядок */
+        white-space: nowrap; 
         font-size: 13px;
         width: auto !important;
-        position: static !important; /* Прибираємо відносне позиціонування */
+        position: static !important;
     }
 
-    /* ПОВНІСТЮ ПРИБИРАЄМО ЗАЛИШКИ КАРТОК */
     td::before {
         display: none !important;
     }
 
     td {
-        padding-left: 8px !important; /* Прибираємо величезний відступ 50% */
+        padding-left: 8px !important;
     }
 
-    /* 4. ІНШЕ */
     .user-name {
         display: none;
     }

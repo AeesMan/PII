@@ -20,7 +20,7 @@ let currentRow = null;
 
 // --- ІВЕНТИ ТА МОДАЛКИ ---
 
-// Мобільне меню
+// Відкриття/закриття сайдбару на мобільних
 if (menuToggle && sidebar) {
     menuToggle.onclick = (e) => {
         e.stopPropagation(); 
@@ -33,8 +33,17 @@ if (menuToggle && sidebar) {
     });
 }
 
+// Очищення візуальних помилок
+function clearErrors() {
+    // Знаходимо всі обгортки з помилками і забираємо клас 'invalid'
+    document.querySelectorAll('.input-wrapper.invalid').forEach(wrapper => {
+        wrapper.classList.remove('invalid');
+    });
+}
+
 // Очищення форми
 function resetForm() {
+    clearErrors();
     if(document.getElementById('st-id')) document.getElementById('st-id').value = ''; 
     if(document.getElementById('st-group')) document.getElementById('st-group').value = 'KN-21'; 
     if(document.getElementById('st-fname')) document.getElementById('st-fname').value = '';
@@ -44,12 +53,11 @@ function resetForm() {
     if(document.getElementById('st-status')) document.getElementById('st-status').value = 'online';
 }
 
-// --- УНІВЕРСАЛЬНА ФУНКЦІЯ ВІДКРИТТЯ МОДАЛКИ ---
 function openStudentModal(row = null) {
     currentRow = row; 
+    clearErrors();
     
     if (row) {
-        // РЕЖИМ РЕДАГУВАННЯ
         document.getElementById('modal-title').innerText = "Edit student";
         if (saveBtn) saveBtn.innerText = "Save";
         
@@ -62,13 +70,12 @@ function openStudentModal(row = null) {
         
         if(document.getElementById('st-gender')) document.getElementById('st-gender').value = row.cells[3].innerText === 'F' ? 'Female' : 'Male';
         
-        // НОВА ЛОГІКА ДАТИ: Забираємо ідеальну, незмінену дату з прихованого атрибута
         const rawDate = row.cells[4].getAttribute('data-raw-date');
         if (rawDate && document.getElementById('st-birth')) {
-            document.getElementById('st-birth').value = rawDate; // Форма завжди вимагає YYYY-MM-DD
+            document.getElementById('st-birth').value = rawDate; 
         }
-    } else {
-        // РЕЖИМ ДОДАВАННЯ
+    } 
+    else {
         resetForm(); 
         document.getElementById('modal-title').innerText = "Add student";
         if (saveBtn) saveBtn.innerText = "Create";
@@ -77,12 +84,10 @@ function openStudentModal(row = null) {
     if (studentModal) studentModal.style.display = 'flex';
 }
 
-// Відкриття модалки додавання (передаємо null)
 if (openAddBtn) {
     openAddBtn.onclick = () => openStudentModal(null);
 }
 
-// Закриття модалок
 document.querySelectorAll('.close-modal').forEach(btn => {
     btn.onclick = () => {
         if (studentModal) studentModal.style.display = 'none';
@@ -90,28 +95,47 @@ document.querySelectorAll('.close-modal').forEach(btn => {
     };
 });
 
-// Кнопка Зберегти/Додати
+// ЛОГІКА ЗБЕРЕЖЕННЯ
 if (saveBtn) {
     saveBtn.onclick = () => {
+        clearErrors();
+        let hasErrors = false; // Прапорець: чи є помилки у формі?
+
+        const fnameInput = document.getElementById('st-fname');
+        const lnameInput = document.getElementById('st-lname');
+        const birthInput = document.getElementById('st-birth');
+        
+        const fname = fnameInput.value.trim();
+        const lname = lnameInput.value.trim();
+        const rawDate = birthInput.value; 
+
+        // Перевірка Ім'я
+        if (!fname) {
+            fnameInput.closest('.input-wrapper').classList.add('invalid');
+            hasErrors = true;
+        }
+        // Перевірка Прізвища
+        if (!lname) {
+            lnameInput.closest('.input-wrapper').classList.add('invalid');
+            hasErrors = true;
+        }
+        // Перевірка Дати
+        if (!rawDate) {
+            birthInput.closest('.input-wrapper').classList.add('invalid');
+            hasErrors = true;
+        }
+
+        // Якщо є хоча б одна помилка — зупиняємо збереження
+        if (hasErrors) {
+            return; 
+        }
+        
         const idField = document.getElementById('st-id');
         const id = idField && idField.value ? idField.value : Date.now().toString();
-        
         const group = document.getElementById('st-group').value;
-        const fname = document.getElementById('st-fname').value.trim();
-        const lname = document.getElementById('st-lname').value.trim();
         const gender = document.getElementById('st-gender').value;
-        const rawDate = document.getElementById('st-birth').value; // Отримуємо 'YYYY-MM-DD'
         const statusField = document.getElementById('st-status');
         const status = statusField ? statusField.value : 'online';
-
-        if (!fname || !lname) {
-            alert("Будь ласка, заповніть Ім'я та Прізвище.");
-            return;
-        }
-        if (!rawDate) {
-            alert("Будь ласка, оберіть дату народження.");
-            return;
-        }
 
         const studentData = {
             id: id,
@@ -128,10 +152,8 @@ if (saveBtn) {
         const fullName = `${fname} ${lname}`;
         const genderShort = gender === 'Female' ? 'F' : 'M';
         
-        // НОВА ЛОГІКА ДАТИ: Створюємо гарну дату для відображення, враховуючи налаштування юзера
         let formattedDate = "";
         if (rawDate) {
-            // timeZone: 'UTC' гарантує, що браузер не змістить дату на 1 день назад через часові пояси
             formattedDate = new Date(rawDate).toLocaleDateString(undefined, { timeZone: 'UTC' }); 
         }
 
@@ -164,13 +186,12 @@ if (saveBtn) {
     };
 }
 
-// Делегування кліків у таблиці (Редагування/Видалення)
+// Делегування кліків у таблиці 
 if (tableBody) {
     tableBody.onclick = (e) => {
         const row = e.target.closest('tr');
         if (!row) return;
 
-        // Видалення
         if (e.target.closest('.delete-row')) {
             currentRow = row;
             const deleteText = document.getElementById('delete-text');
@@ -178,7 +199,6 @@ if (tableBody) {
             if (deleteModal) deleteModal.style.display = 'flex';
         }
         
-        // Редагування
         if (e.target.closest('.edit-row')) {
             openStudentModal(row); 
         }
