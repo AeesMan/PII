@@ -78,12 +78,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-id="1" data-group="1" data-gender="1" data-status="1">
                             <td data-label="Select"><input type="checkbox"></td>
                             <td data-label="Group">KN-21</td>
                             <td data-label="Name">John Smith</td>
                             <td data-label="Gender">M</td>
-                            <td data-label="Birthday">20.05.2005</td>
+                            <td data-label="Birthday" data-raw-date="2005-05-20">20.05.2005</td>
                             <td data-label="Status"><span class="dot online"></span></td>
                             <td data-label="Options">
                                 <button class="icon-btn edit-row"><i class="fa-solid fa-pen"></i></button> 
@@ -115,7 +115,11 @@
                 <div class="form-row">
                     <input type="hidden" id="st-id">
                     <label>Group</label>
-                    <select id="st-group"><option>KN-21</option><option>KN-22</option></select>
+                    <select id="st-group">
+                        <option value="0">Select Group</option>
+                        <option value="1">KN-21</option>
+                        <option value="2">KN-22</option>
+                    </select>
                 </div>
                 <div class="form-row"><label>First name</label>
                     <div class="input-wrapper">
@@ -131,7 +135,11 @@
                 </div>
                 <div class="form-row">
                     <label>Gender</label>
-                    <select id="st-gender"><option>Male</option><option>Female</option></select>
+                    <select id="st-gender">
+                        <option value="0">Select Gender</option>
+                        <option value="1">Male</option>
+                        <option value="2">Female</option>
+                    </select>
                 </div>
                 <div class="form-row"><label>Birthday</label>
                     <div class="input-wrapper">
@@ -142,9 +150,9 @@
                 <div class="form-row">
                     <label>Status</label>
                     <select id="st-status">
-                        <option value="online">Online</option>
-                        <option value="offline">Offline</option>
-                        <option value="away">Away</option>
+                        <option value="0">Select Status</option>
+                        <option value="1">Online</option>
+                        <option value="2">Offline</option>
                     </select>
                 </div>
             </div>

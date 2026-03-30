@@ -1,26 +1,111 @@
-// --- РЕЄСТРАЦІЯ SERVICE WORKER (Для PWA) ---
+// --- РЕЄСТРАЦІЯ SERVICE WORKER ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('Service Worker зареєстровано!'))
+            .then(() => console.log('Service Worker зареєстровано!'))
             .catch(err => console.error('Помилка реєстрації SW:', err));
     });
 }
 
+// --- МІНІ-ФУНКЦІЯ ДЛЯ СКОРОЧЕННЯ ---
+const $ = (sel) => document.querySelector(sel);
+
 // --- ЕЛЕМЕНТИ УПРАВЛІННЯ ---
-const studentModal = document.getElementById('student-modal');
-const deleteModal = document.getElementById('delete-modal');
-const saveBtn = document.getElementById('save-student');
-const tableBody = document.querySelector('#students-table tbody');
-const menuToggle = document.getElementById('mobile-menu-toggle');
-const sidebar = document.querySelector('.sidebar');
-const openAddBtn = document.getElementById('open-add-modal');
+const studentModal = $('#student-modal');
+const deleteModal = $('#delete-modal');
+const saveBtn = $('#save-student');
+const tableBody = $('#students-table tbody');
+const menuToggle = $('#mobile-menu-toggle');
+const sidebar = $('.sidebar');
+const openAddBtn = $('#open-add-modal');
+const confirmDeleteBtn = $('#confirm-delete');
 
-let currentRow = null;
+const inpId = $('#st-id');
+const inpGroup = $('#st-group');
+const inpF = $('#st-fname');
+const inpL = $('#st-lname');
+const inpGender = $('#st-gender');
+const inpBirth = $('#st-birth');
+const inpStatus = $('#st-status');
+const modalTitle = $('#modal-title');
 
-// --- ІВЕНТИ ТА МОДАЛКИ ---
+// --- ДОПОМІЖНІ ФУНКЦІЇ ---
 
-// Відкриття/закриття сайдбару на мобільних
+// Закриття модалки
+function closeModal(modalEl) {
+    if (!modalEl) return;
+    modalEl.style.display = "none";
+    modalEl.setAttribute("aria-hidden", "true");
+}
+
+// Перевірка імені на цифри
+function isValidName(value) {
+    return /^[A-Za-zА-Яа-яІіЇїЄєҐґ' -]+$/.test(value.trim());
+}
+
+// Очищення візуальних помилок
+function clearErrors() {
+    document.querySelectorAll('.invalid').forEach(el => {
+        el.classList.remove('invalid');
+    });
+}
+
+// Допоміжна функція для безпечного відображення помилки
+function showError(element) {
+    if (!element) return;
+    const wrapper = element.closest('.input-wrapper') || element.parentElement;
+    if (wrapper) {
+        wrapper.classList.add('invalid');
+    }
+}
+
+function resetForm() {
+    clearErrors();
+    if(inpId) inpId.value = ''; 
+    if(inpGroup) inpGroup.value = '0'; 
+    if(inpF) inpF.value = '';
+    if(inpL) inpL.value = '';
+    if(inpGender) inpGender.value = '0';
+    if(inpBirth) inpBirth.value = '';
+    if(inpStatus) inpStatus.value = '0';
+}
+
+// Відкриття модалки додавання/редагування
+function openStudentModal(row = null) {
+    clearErrors();
+    
+    if (row) {
+        // РЕДАГУВАННЯ
+        modalTitle.innerText = "Edit student";
+        if (saveBtn) saveBtn.innerText = "Save";
+    
+        if(inpId) inpId.value = row.dataset.id || "";
+        if(inpGroup) inpGroup.value = row.dataset.group || "1";
+        if(inpGender) inpGender.value = row.dataset.gender || "1";
+        if(inpStatus) inpStatus.value = row.dataset.status || "1";
+        
+        const fullName = row.cells[2].innerText.split(" ");
+        if(inpF) inpF.value = fullName[0] || "";
+        if(inpL) inpL.value = fullName[1] || "";
+        
+        const rawDate = row.dataset.rawDate;
+        if (rawDate && inpBirth) inpBirth.value = rawDate; 
+    } else {
+        // ДОДАВАННЯ
+        resetForm(); 
+        modalTitle.innerText = "Add student";
+        if (saveBtn) saveBtn.innerText = "Create";
+    }
+    
+    if (studentModal) {
+        studentModal.style.display = 'flex';
+        studentModal.setAttribute("aria-hidden", "false");
+    }
+}
+
+// --- ІВЕНТИ ---
+
+// Мобільне меню
 if (menuToggle && sidebar) {
     menuToggle.onclick = (e) => {
         e.stopPropagation(); 
@@ -33,148 +118,111 @@ if (menuToggle && sidebar) {
     });
 }
 
-// Очищення візуальних помилок
-function clearErrors() {
-    // Знаходимо всі обгортки з помилками і забираємо клас 'invalid'
-    document.querySelectorAll('.input-wrapper.invalid').forEach(wrapper => {
-        wrapper.classList.remove('invalid');
-    });
-}
-
-// Очищення форми
-function resetForm() {
-    clearErrors();
-    if(document.getElementById('st-id')) document.getElementById('st-id').value = ''; 
-    if(document.getElementById('st-group')) document.getElementById('st-group').value = 'KN-21'; 
-    if(document.getElementById('st-fname')) document.getElementById('st-fname').value = '';
-    if(document.getElementById('st-lname')) document.getElementById('st-lname').value = '';
-    if(document.getElementById('st-gender')) document.getElementById('st-gender').value = 'Male';
-    if(document.getElementById('st-birth')) document.getElementById('st-birth').value = '';
-    if(document.getElementById('st-status')) document.getElementById('st-status').value = 'online';
-}
-
-function openStudentModal(row = null) {
-    currentRow = row; 
-    clearErrors();
-    
-    if (row) {
-        document.getElementById('modal-title').innerText = "Edit student";
-        if (saveBtn) saveBtn.innerText = "Save";
-        
-        if(document.getElementById('st-id')) document.getElementById('st-id').value = row.getAttribute('data-id') || "";
-        if(document.getElementById('st-group')) document.getElementById('st-group').value = row.cells[1].innerText;
-        
-        const fullName = row.cells[2].innerText.split(" ");
-        if(document.getElementById('st-fname')) document.getElementById('st-fname').value = fullName[0] || "";
-        if(document.getElementById('st-lname')) document.getElementById('st-lname').value = fullName[1] || "";
-        
-        if(document.getElementById('st-gender')) document.getElementById('st-gender').value = row.cells[3].innerText === 'F' ? 'Female' : 'Male';
-        
-        const rawDate = row.cells[4].getAttribute('data-raw-date');
-        if (rawDate && document.getElementById('st-birth')) {
-            document.getElementById('st-birth').value = rawDate; 
-        }
-    } 
-    else {
-        resetForm(); 
-        document.getElementById('modal-title').innerText = "Add student";
-        if (saveBtn) saveBtn.innerText = "Create";
-    }
-    
-    if (studentModal) studentModal.style.display = 'flex';
-}
-
 if (openAddBtn) {
     openAddBtn.onclick = () => openStudentModal(null);
 }
 
+// Закриття модалок по хрестику та "Cancel"
 document.querySelectorAll('.close-modal').forEach(btn => {
     btn.onclick = () => {
-        if (studentModal) studentModal.style.display = 'none';
-        if (deleteModal) deleteModal.style.display = 'none';
+        closeModal(studentModal);
+        closeModal(deleteModal);
     };
+});
+
+// Закриття модалок при кліку на темний фон
+[studentModal, deleteModal].forEach(m => {
+    if (m) {
+        m.addEventListener("click", (e) => {
+            if (e.target === m) closeModal(m);
+        });
+    }
 });
 
 // ЛОГІКА ЗБЕРЕЖЕННЯ
 if (saveBtn) {
     saveBtn.onclick = () => {
         clearErrors();
-        let hasErrors = false; // Прапорець: чи є помилки у формі?
+        let hasErrors = false; 
 
-        const fnameInput = document.getElementById('st-fname');
-        const lnameInput = document.getElementById('st-lname');
-        const birthInput = document.getElementById('st-birth');
+        const fname = inpF.value.trim();
+        const lname = inpL.value.trim();
+        const rawDate = inpBirth.value; 
+        const groupValue = inpGroup.value;
+        const genderValue = inpGender.value;
+        const statusValue = inpStatus ? inpStatus.value : '0'; 
+
+        // Валідація з перевіркою тексту і селектів
+        if (!fname || !isValidName(fname)) { showError(inpF); hasErrors = true; }
+        if (!lname || !isValidName(lname)) { showError(inpL); hasErrors = true; }
+        if (!rawDate) { showError(inpBirth); hasErrors = true; }
         
-        const fname = fnameInput.value.trim();
-        const lname = lnameInput.value.trim();
-        const rawDate = birthInput.value; 
+        // Візуальна валідація замість alert
+        if (groupValue === "0") { showError(inpGroup); hasErrors = true; }
+        if (genderValue === "0") { showError(inpGender); hasErrors = true; }
+        if (statusValue === "0") { showError(inpStatus); hasErrors = true; }
 
-        // Перевірка Ім'я
-        if (!fname) {
-            fnameInput.closest('.input-wrapper').classList.add('invalid');
-            hasErrors = true;
-        }
-        // Перевірка Прізвища
-        if (!lname) {
-            lnameInput.closest('.input-wrapper').classList.add('invalid');
-            hasErrors = true;
-        }
-        // Перевірка Дати
-        if (!rawDate) {
-            birthInput.closest('.input-wrapper').classList.add('invalid');
-            hasErrors = true;
-        }
-
-        // Якщо є хоча б одна помилка — зупиняємо збереження
-        if (hasErrors) {
-            return; 
-        }
+        // Якщо є помилки - зупиняємо збереження
+        if (hasErrors) return; 
         
-        const idField = document.getElementById('st-id');
-        const id = idField && idField.value ? idField.value : Date.now().toString();
-        const group = document.getElementById('st-group').value;
-        const gender = document.getElementById('st-gender').value;
-        const statusField = document.getElementById('st-status');
-        const status = statusField ? statusField.value : 'online';
+        const existingId = inpId ? inpId.value : "";
+        const isEditing = existingId !== ""; 
+        const id = isEditing ? existingId : Date.now().toString();
 
+        // Формуємо JSON
         const studentData = {
             id: id,
-            group: group,
+            group: groupValue,
             firstName: fname,
             lastName: lname,
-            gender: gender,
+            gender: genderValue,
             birthday: rawDate, 
-            status: status
+            status: statusValue
         };
 
-        console.log("Дані для відправки на сервер:", JSON.stringify(studentData));
+        console.log("Дані для сервера:", JSON.stringify(studentData));
         
         const fullName = `${fname} ${lname}`;
-        const genderShort = gender === 'Female' ? 'F' : 'M';
+        const groupText = groupValue === "2" ? "KN-22" : "KN-21";
+        const genderShort = genderValue === "2" ? "F" : "M";
+        const statusText = statusValue === "2" ? "offline" : "online";
         
         let formattedDate = "";
         if (rawDate) {
             formattedDate = new Date(rawDate).toLocaleDateString(undefined, { timeZone: 'UTC' }); 
         }
 
-        if (currentRow) {
-            currentRow.cells[1].innerText = group;
-            currentRow.cells[2].innerText = fullName;
-            currentRow.cells[3].innerText = genderShort;
-            currentRow.cells[4].innerText = formattedDate;
-            currentRow.cells[4].setAttribute('data-raw-date', rawDate);
-            const statusDot = currentRow.cells[5].querySelector('.dot');
-            if (statusDot) statusDot.className = `dot ${status}`;
+        if (isEditing) {
+            const targetRow = document.querySelector(`tr[data-id="${id}"]`);
+            if (targetRow) {
+                targetRow.dataset.group = groupValue;
+                targetRow.dataset.gender = genderValue;
+                targetRow.dataset.status = statusValue;
+                targetRow.dataset.rawDate = rawDate;
+                
+                targetRow.cells[1].innerText = groupText;
+                targetRow.cells[2].innerText = fullName;
+                targetRow.cells[3].innerText = genderShort;
+                targetRow.cells[4].innerText = formattedDate;
+                
+                const statusDot = targetRow.cells[5].querySelector('.dot');
+                if (statusDot) statusDot.className = `dot ${statusText}`;
+            }
         } else if (tableBody) {
             const row = tableBody.insertRow();
-            row.setAttribute('data-id', id); 
+            row.dataset.id = id;
+            row.dataset.group = groupValue;
+            row.dataset.gender = genderValue;
+            row.dataset.status = statusValue;
+            row.dataset.rawDate = rawDate;
+            
             row.innerHTML = `
                 <td data-label="Select"><input type="checkbox"></td>
-                <td data-label="Group">${group}</td>
+                <td data-label="Group">${groupText}</td>
                 <td data-label="Name">${fullName}</td>
                 <td data-label="Gender">${genderShort}</td>
-                <td data-label="Birthday" data-raw-date="${rawDate}">${formattedDate}</td>
-                <td data-label="Status"><span class="dot ${status}"></span></td>
+                <td data-label="Birthday">${formattedDate}</td>
+                <td data-label="Status"><span class="dot ${statusText}"></span></td>
                 <td data-label="Options">
                     <button class="icon-btn edit-row"><i class="fa-solid fa-pen"></i></button> 
                     <button class="icon-btn delete-row"><i class="fa-solid fa-xmark"></i></button>
@@ -182,7 +230,7 @@ if (saveBtn) {
             `;
         }
         
-        if (studentModal) studentModal.style.display = 'none';
+        closeModal(studentModal);
     };
 }
 
@@ -193,10 +241,16 @@ if (tableBody) {
         if (!row) return;
 
         if (e.target.closest('.delete-row')) {
-            currentRow = row;
-            const deleteText = document.getElementById('delete-text');
+            const rowId = row.dataset.id;
+            if (confirmDeleteBtn) confirmDeleteBtn.dataset.targetId = rowId;
+            
+            const deleteText = $('#delete-text');
             if (deleteText) deleteText.innerText = `Are you sure you want to delete user ${row.cells[2].innerText}?`;
-            if (deleteModal) deleteModal.style.display = 'flex';
+            
+            if (deleteModal) {
+                deleteModal.style.display = 'flex';
+                deleteModal.setAttribute("aria-hidden", "false");
+            }
         }
         
         if (e.target.closest('.edit-row')) {
@@ -206,12 +260,13 @@ if (tableBody) {
 }
 
 // Підтвердження видалення
-const confirmDeleteBtn = document.getElementById('confirm-delete');
 if (confirmDeleteBtn) {
     confirmDeleteBtn.onclick = () => {
-        if (currentRow) {
-            currentRow.remove(); 
+        const targetId = confirmDeleteBtn.dataset.targetId;
+        if (targetId) {
+            const rowToDelete = document.querySelector(`tr[data-id="${targetId}"]`);
+            if (rowToDelete) rowToDelete.remove();
         }
-        if (deleteModal) deleteModal.style.display = 'none';
+        closeModal(deleteModal);
     };
 }
